@@ -7,9 +7,13 @@
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-        <!-- build:css(.tmp) styles/main.css -->
+    <!-- build:css(.tmp) styles/main.css -->
         <link rel="stylesheet" href="styles/main.css">
-        <!-- endbuild -->
+        <link rel="stylesheet" href="styles/uploads.css">
+        <link rel="stylesheet" href="styles/images.css">
+        <link rel="stylesheet" href="styles/bootstrap/condo_custom.css">
+        <link rel="stylesheet" href="styles/bootstrap.min.css">
+    <!-- endbuild -->
 </head>
 <body ng-app="angularUploadsApp">
   <!-- Add your site or application content here -->
@@ -24,8 +28,8 @@
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 
     <script src="bower_components/angular-safeapply/safe-apply.js"></script>
-    <script src="bower_components/base64/base64.js"></script>
 
+    <script src="bower_components/base64/base64.js"></script>
     <script src="scripts/condo.js"></script>
     <script src="scripts/condo/services/uploader.js"></script>
     <script src="scripts/condo/services/config.js"></script>
@@ -33,8 +37,10 @@
     <script src="scripts/condo/amazon.js"></script>
     <script src="scripts/condo/google.js"></script>
 
+    <script src="scripts/directives/directives.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/controllers/main.js"></script>
+
   <!-- endbuild -->
 </body>
 </html>

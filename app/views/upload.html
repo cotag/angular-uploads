@@ -1,0 +1,71 @@
+<div class="condo-uploads-wrapper" data-co-uploads>
+	<div class="condo-drop-indicator">
+		<div>Drop Files Here</div>
+	</div>
+	<div class="condo-uploads-container">
+		<div class="condo-uploads">		<!-- NOTE:: Controller Name: UploadsCtrl -->
+			<div class="condo-upload ng-cloak" co-upload data-ng-repeat="upload in uploads">
+				<div class="description">
+					<table>
+						<tr>
+							<td class="icon image"></td>
+							<td class="name">{{upload.path}}{{upload.name}}</td>
+						</tr>
+					</table>
+				</div>
+				<div class="stats">
+					<table>
+						<tr>
+							<td class="size">{{size}}</td>
+							<td class="controls image" ng-class="{'paused':paused, 'uploading':!paused}" ng-click="playpause(upload)"></td>
+							<td class="progressbar">
+								<div class="progress " role="progressbar" aria-live="polite" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">
+									<div class="bar" ng-style="{ 'width': progress + '%' }" ></div>
+									<div class="message">
+										{{upload.message}}
+									</div>
+								</div>
+							</td>
+							<td ng-click="animate_remove(upload, 900)" class="abort image"></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="condo-file-selection">
+		<div>
+			<table>
+				<tr>
+					<td class="file-upload-btn">
+						<form>
+							<span class="btn">
+								<table>
+									<tr>
+										<td>
+											<label for="file-upload_{{$id}}">Select files</label>
+										</td>
+									</tr>
+								</table>
+								<input id="file-upload_{{$id}}" type="file" multiple />
+							</span>
+						</form>
+					</td>
+					<td>
+						<ul class="dropup">
+							<li class="dropdown">
+								<a class="btn dropdown-toggle" href="#">Options</a>
+								<ul class="dropdown-menu">
+									<li><label class="checkbox"><input data-ng-model="autostart" type="checkbox"> Autostart</label></li>
+									<li><label class="checkbox"><input data-ng-model="ignore_errors" type="checkbox"> Ignore Errors</label></li>
+									<li><label class="checkbox"><input data-ng-model="remove_completed" type="checkbox"> Remove Completed</label></li>
+									<li><input data-ng-model="parallelism" id="parallelism_{{$id}}" type="number" step="1" min="1" max="5" /> <label for="parallelism_{{$id}}">Simultaneous</label></li>
+								</ul>
+							</li>
+						</ul>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>

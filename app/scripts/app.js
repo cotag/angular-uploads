@@ -4,7 +4,7 @@ angular.module('angularUploadsApp', ['ngRoute', 'Condo'])
   .config(['$routeProvider', function ($routeProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: 'views/main.html',
+        templateUrl: 'views/upload.html',
         controller: 'MainCtrl'
       })
       .otherwise({

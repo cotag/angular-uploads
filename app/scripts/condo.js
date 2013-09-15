@@ -53,7 +53,7 @@
 					// check file size is acceptable
 					//
 					if(!config.file_checker(file) || (config.size_limit != undefined && file.size > config.size_limit)) {
-						$scope.$emit('coNotice', {
+						$scope.$broadcast('coNotice', {
 							type: 'warn',
 							number: 0,
 							file: file
@@ -79,7 +79,7 @@
 						//
 						// broadcast this so it can be handled by a directive
 						//
-						$scope.$emit('coNotice', failure);
+						$scope.$broadcast('coNotice', failure);
 					});
 				}
 			};
