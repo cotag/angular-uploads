@@ -1,0 +1,19 @@
+
+
+
+<div upload-main class="upload-container">
+	<circlebar progress="selected.progress" total="selected.size">
+		<div class="co-circle work" ng-class="{pending: circle_style.pending}"></div>
+		<div ng-class="{hide: selected, waiting: !selected}">
+			<p>Drag & Drop</p>
+			<p>to Upload</p>
+		</div>
+		<div ng-class="{hide: !circle_style.paused, paused: !circle_style.paused}">
+			<p>Paused<span ng-class="{hide: !circle_style.error}"> due to error</span></p>
+			<p>to Upload</p>
+		</div>
+		<div ng-class="{hide: !circle_style.uploading, uploading: circle_style.uploading}">
+			<p>{{prettyProgress()}}%</p>
+		</div>
+	</circlebar>
+</div>

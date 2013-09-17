@@ -7,6 +7,10 @@ angular.module('angularUploadsApp', ['ngRoute', 'Condo'])
         templateUrl: 'views/upload.html',
         controller: 'MainCtrl'
       })
+      .when('/new', {
+        templateUrl: 'views/upload2.html',
+        controller: 'MainCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });

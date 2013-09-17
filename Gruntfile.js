@@ -39,6 +39,10 @@ module.exports = function (grunt) {
         files: ['test/spec/{,*/}*.coffee'],
         tasks: ['coffee:test']
       },
+      compass: {
+        files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
+        tasks: ['compass']
+      },
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
         tasks: ['copy:styles', 'autoprefixer']
@@ -160,6 +164,23 @@ module.exports = function (grunt) {
           dest: '.tmp/spec',
           ext: '.js'
         }]
+      }
+    },
+    compass: {
+      options: {
+        sassDir: '<%= yeoman.app %>/styles',
+        cssDir: '.tmp/styles',
+        imagesDir: '<%= yeoman.app %>/images',
+        javascriptsDir: '<%= yeoman.app %>/scripts',
+        fontsDir: '<%= yeoman.app %>/styles/fonts',
+        importPath: '<%= yeoman.app %>/bower_components',
+        relativeAssets: true
+      },
+      dist: {},
+      server: {
+        options: {
+          debugInfo: true
+        }
       }
     },
     // We dynamically load one of two files depending on available features
@@ -293,15 +314,18 @@ module.exports = function (grunt) {
     },
     concurrent: {
       server: [
+        'compass:server',
         'coffee:dist',
         'copy:styles'
       ],
       test: [
         'coffee',
+        'compass',
         'copy:styles'
       ],
       dist: [
         'coffee',
+        'compass:dist',
         'copy:styles',
         'imagemin',
         'svgmin',

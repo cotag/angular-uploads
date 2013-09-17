@@ -1,0 +1,106 @@
+// Variables
+
+$dark-blue: #292d33;
+$dark-grey: #7a868d;
+$light-grey: #ebebeb;
+$aqua: #71bab8; 
+$orange: #cb6d47;
+$purple: #8560a8;
+$white: #ffffff; 
+$active-blue: #202328;
+$blue: #00a7c8;
+$red: #b72706;
+$dark-red: #9d2408;
+$green: #8dc63f;
+
+$pad: 20px;
+$default_rounded_amount: 15px;
+$headerh: 47px;     // Header height (Also used in app.js for header animations)
+$headermore: 210px; // Visible Top Header Nav
+$asidew: 80px;      // icon nav width
+$navw: 280px;       // section nav width
+$fixedzindex: 500;  // z-index of fixed elements
+
+// Font weights
+$light: 100;
+$regular: 400;
+$bold: 600;
+
+// Base Font
+$base-sans: 'Myriad Pro', Helvetica, sans-serif;
+$base-serifs: Georgia, serif;
+$base-font-weight: $regular;
+$base-font-size: 14px;
+$base-line-height: 1.4;
+
+$heading-font: 'Oswald', Helvetica;
+$heading-size: 40px;
+
+// Fixed Font
+$fixed-font-family: monospace;
+$fixed-font-size: 85%;
+$fixed-line-height: $base-line-height;
+
+// Mixins
+
+@mixin roundcorners($radius) {
+    -moz-border-radius: $radius;   
+    -webkit-border-radius: $radius; 
+    -ms-border-radius: $radius;
+    -o-border-radius: $radius;
+    border-radius: $radius;         
+}
+@mixin border-radius($topLeft, $topRight, $bottomRight, $bottomLeft) {
+    -webkit-border-radius: $topLeft $topRight $bottomRight $bottomLeft;
+    -moz-border-radius: $topLeft $topRight $bottomRight $bottomLeft;
+    -ms-border-radius: $topLeft $topRight $bottomRight $bottomLeft;
+    -o-border-radius: $topLeft $topRight $bottomRight $bottomLeft;
+    border-radius: $topLeft $topRight $bottomRight $bottomLeft;
+}
+
+@mixin bg-image {
+    background-size: 60px 55px;
+}
+
+@mixin hide-text {
+	font: 0/0 a;
+    text-shadow: none;
+    color: transparent;
+}
+@mixin navlist {
+    list-style-type: none;
+    margin:0;
+    overflow: hidden;
+    li {
+        display:inline;
+        float:left;
+        height: 30px;
+        &:last-child {
+        	margin-right:0px;
+    	}
+        a {
+        	color: $white;
+        	padding: 8px 18px;
+        	text-decoration: none;
+        	display: block;
+        	&:hover {
+        		background: $active-blue;
+        		@include roundcorners(24px);
+                color: $white;
+        		}
+    		&:active {
+    		background: $active-blue;
+    		@include roundcorners(24px);
+            color: $white;
+    			}
+	    	}
+		}
+    
+	}
+
+@mixin asidelist {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
