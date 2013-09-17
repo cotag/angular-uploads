@@ -42,13 +42,14 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun: false
+    singleRun: false,
 
-    // Uncomment the following lines if you are using grunt's server to run the tests
-    // proxies: {
-    //   '/': 'http://localhost:9000/'
-    // },
+    // NOTE:: Requires Gruntfile.js to have : mountFolder(connect, yeomanConfig.app)
+    // in the test -> middleware section
+    proxies: {
+       '/': 'http://localhost:9000/'
+    },
     // URL root prevent conflicts with the site root
-    // urlRoot: '_karma_'
+    urlRoot: '_karma_'
   });
 };

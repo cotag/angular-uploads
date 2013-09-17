@@ -4,7 +4,7 @@
 
 // The container holding the progress bar
 div.upload-container {
-    width: 30%;
+    width: 40%;
     height: 100%;
 
     // Customise the data to be displayed in the circle
@@ -18,8 +18,8 @@ div.upload-container {
                 display:block;
                 top: 0;
                 left: 0;
-                border-color: $red;  // Same as div.circle
-                border-style: dashed;
+                border-color: #50a6d3;  // Same as div.circle
+                border-style: double solid;
 
                 -webkit-animation-duration: 3s;
                 -webkit-animation-name: spinners;
@@ -48,17 +48,19 @@ div.upload-container {
             font-family: 'Oswald';
             text-transform: uppercase;
             font-size: 0.075em;
+            line-height: 1em;
             font-weight: 300;
             margin: 0;
             color: $white;
             text-align: center;
         }
 
-        /*.waiting {
-            background: url(../images/upload.svg) no-repeat top center;
-            background-size: contain;
-        }*/
-        .uploading { 
+        .waiting {
+            img {
+              width: 0.4em;
+            }
+        }
+        .uploading {
             font-size: 3.5em;
         }
     }

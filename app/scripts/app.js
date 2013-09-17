@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('angularUploadsApp', ['ngRoute', 'Condo'])
+angular.module('angularUploadsApp', ['ngRoute', 'Condo', 'Circular'])
   .config(['$routeProvider', function ($routeProvider) {
     $routeProvider
       .when('/', {
