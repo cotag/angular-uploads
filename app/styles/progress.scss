@@ -10,11 +10,11 @@ div.co-circle-progress {
     // Common traits of all the circles
     div.co-circle {
         position:absolute;
+        top: 0;
+        left: 0;
+
         @include border-radius(0.5em);
         background: transparent;
-
-        width: 1em;
-        height: 1em;
 
         border: 0.04em solid;
         width:0.92em; /* 1 - (2 * border width) */
@@ -60,9 +60,7 @@ div.co-circle-progress {
 	}
 
     // Circle background and empty progress color
-    &> div.bg { 
-        background-position: 50% 5%;
-        background-size: 80% 60%;
+    &> div.bg {
         background-color: #2b383f;
         border-color: #ccc;
     }
