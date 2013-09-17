@@ -5,7 +5,9 @@
 	<circlebar progress="selected.progress" total="selected.size">
 		<div class="co-circle work" ng-class="{pending: circle_style.pending}"></div>
 		<div ng-class="{hide: selected, waiting: !selected}">
+			<img src="/images/upload.svg" />
 			<p>Drag & Drop</p>
+			<br />
 			<p>to Upload</p>
 		</div>
 		<div ng-class="{hide: !circle_style.paused, paused: !circle_style.paused}">
