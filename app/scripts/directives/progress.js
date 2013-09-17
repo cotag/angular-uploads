@@ -17,14 +17,14 @@
 (function (angular) {
     'use strict';
 
-    angular.module('Circular', ['SafeApply']).
+    angular.module('Circular', []).
 
         // isolated circular progress bar
-        directive('cirgress', ['$window', '$safeApply', function ($window, $safeApply) {
+        directive('cirgress', ['$window', function ($window) {
             return {
                 template: '<div class="co-circle-progress">' +
                             '<div class="co-circle bg"></div>' +
-                            '<div class="co-progress" ng-class="{gt50: progress > 180}">' +
+                            '<div class="co-progress" ng-class="{gt50: next_half}">' +
                                 '<div class="co-circle"></div>' +
                                 '<div class="co-circle filled"></div>' +
                             '</div>' +
@@ -40,68 +40,74 @@
                     total: '=total'
                 },
                 link: function (scope, element) {
-                    var next_half = false,        // used to coordinate the transition animation
-                        apply_progress = true,    // used to coordinate the transition animation
+                    var apply_progress = true,    // used to coordinate the transition animation
                         progress_temp,            // holds the progress during the coordinated transition
                         progressEl = element.find('div.co-progress > div:first-child'),
+
+                        // Width must be an even number of pixels for the effect to work.
                         setWidth = function () {
-                            // Width must be an even px for the effect to work.
                             var width = element.width();
                             element.css('font-size', width - (width % 2) + 'px');
+                        },
+
+                        // Set the rotation of the square
+                        updateProgress = function (pos) {
+                            progressEl.css({
+                                '-moz-transform': 'rotate(' + pos + 'deg)',
+                                '-ms-transform': 'rotate(' + pos + 'deg)',
+                                '-webkit-transform': 'rotate(' + pos + 'deg)',
+                                '-o-transform': 'rotate(' + pos + 'deg)',
+                                'transform': 'rotate(' + pos + 'deg)'
+                            });
+                        },
+
+                        // Cache the transition events string
+                        transitionEvents = 'webkitTransitionEnd mozTransitionEnd msTransitionEnd oTransitionEnd transitionend',
+
+                        // Cache the forward transition (clockwise)
+                        moveForward = function () {
+                            progressEl.unbind(transitionEvents);
+                            scope.next_half = true;
+                            scope.$apply();
+                            updateProgress(progress_temp);
+                        },
+
+                        // Cache the backwards transition (anti-clockwise)
+                        moveBackwards = function () {
+                            progressEl.unbind(transitionEvents);
+                            scope.next_half = false;
+                            scope.$apply();
+                            updateProgress(progress_temp);
                         };
 
-                    // we have to use em's for the clip function to work with %
+                    // Indicates which side the filled half circle should be located
+                    scope.next_half = false;
+
+                    // we have to use em's for the clip function to work like a percentage
+                    // so we have to manually perform the resize based on width
                     setWidth();
                     angular.element($window).bind('orientationchange resize', setWidth);
-
-                    // the current progress in degrees 0-360
-                    scope.progress = 0;
-                    scope.$watch('progress', function (pos) {
-                        progressEl.css({
-                            '-moz-transform': 'rotate(' + pos + 'deg)',
-                            '-ms-transform': 'rotate(' + pos + 'deg)',
-                            '-webkit-transform': 'rotate(' + pos + 'deg)',
-                            '-o-transform': 'rotate(' + pos + 'deg)',
-                            'transform': 'rotate(' + pos + 'deg)'
-                        });
-                    });
 
                     // we watch for changes to the progress indicator of the parent scope
                     scope.$watch('current', function (newValue) {
                         newValue = newValue / scope.total * 360;
 
-                        if (newValue > 180 && !next_half) {
+                        if (newValue > 180 && !scope.next_half) {
                             progress_temp = newValue;
                             if (apply_progress) {
                                 apply_progress = false;
-                                scope.progress = 180;
-                                progressEl.bind('webkitTransitionEnd mozTransitionEnd msTransitionEnd oTransitionEnd transitionend', function () {
-                                    progressEl.unbind('webkitTransitionEnd mozTransitionEnd msTransitionEnd oTransitionEnd transitionend');
-                                    $window.requestAnimationFrame(function () {
-                                        $safeApply(scope, function () {
-                                            scope.progress = progress_temp;
-                                        });
-                                    });
-                                    next_half = true;
-                                });
+                                updateProgress(180);
+                                progressEl.bind(transitionEvents, moveForward);
                             }
-                        } else if (newValue <= 180 && next_half) {
+                        } else if (newValue <= 180 && scope.next_half) {
                             progress_temp = newValue;
                             if (!apply_progress) {
                                 apply_progress = true;
-                                scope.progress = 180.00001;
-                                progressEl.bind('webkitTransitionEnd mozTransitionEnd msTransitionEnd oTransitionEnd transitionend', function () {
-                                    progressEl.unbind('webkitTransitionEnd mozTransitionEnd msTransitionEnd oTransitionEnd transitionend');
-                                    $window.requestAnimationFrame(function () {
-                                        $safeApply(scope, function () {
-                                            scope.progress = progress_temp;
-                                        });
-                                    });
-                                    next_half = false;
-                                });
+                                updateProgress(180.000001);
+                                progressEl.bind(transitionEvents, moveBackwards);
                             }
                         } else {
-                            scope.progress = newValue;
+                            updateProgress(newValue);
                         }
                     });
                 }
