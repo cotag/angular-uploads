@@ -158,7 +158,5 @@ describe('Circular:cirgress (directive)', function() {
         degrees = findDegrees(bar);
         expect(degrees).toBe(0);
     }));
-
-    // TODO:: test width
 });
 

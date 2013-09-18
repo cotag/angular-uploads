@@ -1,6 +1,41 @@
 <div class="condo-uploads-wrapper" data-co-uploads>
-	<div class="condo-drop-indicator">
-		<div>Drop Files Here</div>
+
+	<div class="condo-file-selection">
+		<div class="condo-options">
+			<button class="btn">
+				Select files
+				<input type="file" multiple />
+			</button>
+			<ul class="dropdown">
+				<li class="dropdown">
+					<a class="btn dropdown-toggle" href="#">Options</a>
+					<ul class="dropdown-menu">
+						<li><label class="checkbox"><input data-ng-model="autostart" type="checkbox"> Autostart</label></li>
+						<li><label class="checkbox"><input data-ng-model="ignore_errors" type="checkbox"> Ignore Errors</label></li>
+						<li><label class="checkbox"><input data-ng-model="remove_completed" type="checkbox"> Remove Completed</label></li>
+						<li><input data-ng-model="parallelism" id="parallelism_{{$id}}" type="number" step="1" min="1" max="5" /> <label for="parallelism_{{$id}}">Simultaneous</label></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+
+		<div upload-main class="upload-container">
+			<cirgress progress="selected.progress" total="selected.size">
+				<div class="co-circle work" ng-class="{pending: circle_style.pending}"></div>
+				<div ng-class="{hide: selected, waiting: !selected}">
+					<img src="/images/upload.svg" alt="dnd upload" />
+					<p>Drag & Drop</p>
+					<p>to Upload</p>
+				</div>
+				<div ng-class="{hide: !circle_style.paused, paused: !circle_style.paused}">
+					<p>Paused<span ng-class="{hide: !circle_style.error}"> due to error</span></p>
+					<p>to Upload</p>
+				</div>
+				<div ng-class="{hide: !circle_style.uploading, uploading: circle_style.uploading}">
+					<p>{{prettyProgress()}}%</p>
+				</div>
+			</cirgress>
+		</div>
 	</div>
 	<div class="condo-uploads-container">
 		<div class="condo-uploads">		<!-- NOTE:: Controller Name: UploadsCtrl -->
@@ -31,41 +66,6 @@
 					</table>
 				</div>
 			</div>
-		</div>
-	</div>
-	<div class="condo-file-selection">
-		<div>
-			<table>
-				<tr>
-					<td class="file-upload-btn">
-						<form>
-							<span class="btn">
-								<table>
-									<tr>
-										<td>
-											<label for="file-upload_{{$id}}">Select files</label>
-										</td>
-									</tr>
-								</table>
-								<input id="file-upload_{{$id}}" type="file" multiple />
-							</span>
-						</form>
-					</td>
-					<td>
-						<ul class="dropup">
-							<li class="dropdown">
-								<a class="btn dropdown-toggle" href="#">Options</a>
-								<ul class="dropdown-menu">
-									<li><label class="checkbox"><input data-ng-model="autostart" type="checkbox"> Autostart</label></li>
-									<li><label class="checkbox"><input data-ng-model="ignore_errors" type="checkbox"> Ignore Errors</label></li>
-									<li><label class="checkbox"><input data-ng-model="remove_completed" type="checkbox"> Remove Completed</label></li>
-									<li><input data-ng-model="parallelism" id="parallelism_{{$id}}" type="number" step="1" min="1" max="5" /> <label for="parallelism_{{$id}}">Simultaneous</label></li>
-								</ul>
-							</li>
-						</ul>
-					</td>
-				</tr>
-			</table>
 		</div>
 	</div>
 </div>
