@@ -1,23 +1,36 @@
 <div class="condo-uploads-wrapper" data-co-uploads>
 
 	<div class="condo-file-selection">
+
 		<div class="condo-options">
-			<button class="btn">
-				Select files
-				<input type="file" multiple />
-			</button>
-			<ul class="dropdown">
-				<li class="dropdown">
-					<a class="btn dropdown-toggle" href="#">Options</a>
-					<ul class="dropdown-menu">
-						<li><label class="checkbox"><input data-ng-model="autostart" type="checkbox"> Autostart</label></li>
-						<li><label class="checkbox"><input data-ng-model="ignore_errors" type="checkbox"> Ignore Errors</label></li>
-						<li><label class="checkbox"><input data-ng-model="remove_completed" type="checkbox"> Remove Completed</label></li>
-						<li><input data-ng-model="parallelism" id="parallelism_{{$id}}" type="number" step="1" min="1" max="5" /> <label for="parallelism_{{$id}}">Simultaneous</label></li>
-					</ul>
-				</li>
-			</ul>
+			<table>
+				<tr>
+					<td>
+						<button class="btn">
+							Select files
+							<input type="file" multiple />
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<ul class="dropdown">
+							<li class="dropdown">
+								<a class="btn dropdown-toggle" href="#">Options</a>
+								<ul class="dropdown-menu">
+									<li><label class="checkbox"><input data-ng-model="autostart" type="checkbox"> Autostart</label></li>
+									<li><label class="checkbox"><input data-ng-model="ignore_errors" type="checkbox"> Ignore Errors</label></li>
+									<li><label class="checkbox"><input data-ng-model="remove_completed" type="checkbox"> Remove Completed</label></li>
+									<li><input data-ng-model="parallelism" id="parallelism_{{$id}}" type="number" step="1" min="1" max="5" /> <label for="parallelism_{{$id}}">Simultaneous</label></li>
+								</ul>
+							</li>
+						</ul>
+					</td>
+				</tr>
+			</table>
 		</div>
+
+		<h1>Cloud File Uploads</h1>
 
 		<div upload-main class="upload-container">
 			<cirgress progress="selected.progress" total="selected.size">
@@ -54,7 +67,7 @@
 							<td class="size">{{size}}</td>
 							<td class="controls image" ng-class="{'paused':paused, 'uploading':!paused}" ng-click="playpause(upload)"></td>
 							<td class="progressbar">
-								<div class="progress " role="progressbar" aria-live="polite" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">
+								<div class="progressbar" role="progressbar" aria-live="polite" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">
 									<div class="bar" ng-style="{ 'width': progress + '%' }" ></div>
 									<div class="message">
 										{{upload.message}}

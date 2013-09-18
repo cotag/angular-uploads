@@ -1,0 +1,56 @@
+
+
+.supports-svg {
+	div.condo-upload {
+		td.icon {
+			background: url(../images/document.svg) no-repeat center center;
+		}
+		
+		td.controls.paused {
+			background: url(../images/play.svg) no-repeat center center;
+		}
+
+		td.controls.uploading {
+			background: url(../images/pause.svg) no-repeat center center;
+		}
+
+		td.abort {
+			background: url(../images/close.svg) no-repeat center center;
+		}
+	}
+}
+
+
+.no-svg {
+	div.condo-upload {
+		td.icon {
+			background: url(../images/document.png) no-repeat center center;
+		}
+
+		td.controls.paused {
+			background: url(../images/play.png) no-repeat center center;
+		}
+
+		td.controls.uploading {
+			background: url(../images/pause.png) no-repeat center center;
+		}
+
+		td.abort {
+			background: url(../images/close.png) no-repeat center center;
+		}
+	}
+}
+
+
+div.condo-upload {
+	td.image, td.blank {
+		width: 1.8em;
+
+		-webkit-background-size: contain !important;
+		-moz-background-size: contain !important;
+		-ms-background-size: contain !important;
+		-o-background-size: contain !important;
+		background-size: contain !important;
+	}
+}
+
