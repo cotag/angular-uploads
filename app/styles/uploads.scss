@@ -1,19 +1,20 @@
-@import "compass";
-
-
 /**
 *    CoTag Condo Example Uploader
 *    Direct to cloud resumable uploads
 *    
 *   Copyright (c) 2013 CoTag Media.
 *    
-*    @author        Stephen von Takach <steve@cotag.me>
+*    @author       Stephen von Takach <steve@cotag.me>
 *    @copyright    2013 cotag.me
 * 
 *    
 *    A responsive and resolution independent upload UI
 *
 **/
+
+
+@import "progress_config";
+@import "compass";
 
 
 
@@ -53,6 +54,7 @@ div.condo-uploads-wrapper {
 
 
     h1 {
+        color: $progressFillColor;
         margin-top: 1em;
         margin-right: 1em;
         float: right;
@@ -288,9 +290,10 @@ div.condo-upload {
 
                     &.progressbar {
                         position: relative;
-                        
+                        @include border-radius(3px);
                         height: 1.3em;                /* Same as background size below */
-                        background: white;
+                        background: $progressBarBg;
+                        overflow: hidden;
                         
                         margin-bottom: 0px;            /* reset for full twitter bootstrap */
                     
@@ -309,7 +312,7 @@ div.condo-upload {
 
                             &.bar {
                                 height: 100%;
-                                background-color: #50a6d3;
+                                background-color: $progressBarColor;
 
 
                                 &.animate {

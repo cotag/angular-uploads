@@ -1,4 +1,11 @@
 @import "compass";
+@import "progress_config";
+
+// That calculation I mentioned in progress_config
+$progressBarAcutalWidth: $progressBarWidth / 100;
+$progressBarCalculatedWidth: $progressBarAcutalWidth + em;
+// Circle width is: 1 - (2 * border width)
+$progressCircleWidth: (1 - (2 * $progressBarAcutalWidth)) + em;
 
 
 // this is the core progress class
@@ -16,9 +23,9 @@ div.co-circle-progress {
         @include border-radius(0.5em);
         background: transparent;
 
-        border: 0.08em solid;
-        width:0.84em; /* 1 - (2 * border width) */
-        height:0.84em; /* 1 - (2 * border width) */
+        border: $progressBarCalculatedWidth solid;
+        width:  $progressCircleWidth; /* 1 - (2 * border width) */
+        height: $progressCircleWidth; /* 1 - (2 * border width) */
     }
 
 	&> div.co-progress {
@@ -32,7 +39,7 @@ div.co-circle-progress {
 
         // The two half circles that make up the progress
         &> div {
-            border-color: #50a6d3;
+            border-color: $progressBarColor;
             clip:rect(0em,0.5em,1em,0em);
 
             -webkit-transition: -webkit-transform 0.3s linear;
@@ -61,8 +68,8 @@ div.co-circle-progress {
 
     // Circle background and empty progress color
     &> div.bg {
-        background-color: #2b383f;
-        border-color: #ccc;
+        background-color: $progressFillColor;
+        border-color: $progressBarBg;
     }
 
     // Centering of the transcluded content by default

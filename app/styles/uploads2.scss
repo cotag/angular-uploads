@@ -1,4 +1,4 @@
-@import "helpers";
+@import "progress_config";
 @import "compass";
 
 
@@ -16,7 +16,7 @@ div.upload-container {
 
             &.pending {
                 display:block;
-                border-color: #50a6d3;  // Same as div.circle
+                border-color: $progressBarColor;  // Same as div.circle
                 border-style: double solid;
 
                 -webkit-animation-duration: 3s;
@@ -49,7 +49,7 @@ div.upload-container {
             line-height: 1em;
             font-weight: 300;
             margin: 0;
-            color: $white;
+            color: white;
             text-align: center;
         }
 

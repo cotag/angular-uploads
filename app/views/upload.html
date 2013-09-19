@@ -64,7 +64,6 @@
 				<div class="stats">
 					<table>
 						<tr>
-							<td class="size">{{size}}</td>
 							<td class="controls image" ng-class="{'paused':paused, 'uploading':!paused}" ng-click="playpause(upload)"></td>
 							<td class="progressbar">
 								<div class="progressbar" role="progressbar" aria-live="polite" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">
@@ -74,6 +73,7 @@
 									</div>
 								</div>
 							</td>
+							<td class="size">{{size}}</td>
 							<td ng-click="animate_remove(upload, 900)" class="abort image"></td>
 						</tr>
 					</table>
