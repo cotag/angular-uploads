@@ -7,8 +7,10 @@
 				<tr>
 					<td>
 						<button class="btn">
-							Select files
-							<input type="file" multiple />
+							<form>
+								<span>Select files</span>
+								<input type="file" multiple />
+							</form>
 						</button>
 					</td>
 				</tr>
@@ -33,7 +35,7 @@
 		<h1>Cloud File Uploads</h1>
 
 		<div upload-main class="upload-container">
-			<cirgress progress="selected.progress" total="selected.size">
+			<cirgress progress="selected.upload.progress" total="selected.size">
 				<div class="co-circle work" ng-class="{pending: circle_style.pending}"></div>
 				<div ng-class="{hide: selected, waiting: !selected}">
 					<img src="/images/upload.svg" alt="dnd upload" />
@@ -52,29 +54,29 @@
 	</div>
 	<div class="condo-uploads-container">
 		<div class="condo-uploads">		<!-- NOTE:: Controller Name: UploadsCtrl -->
-			<div class="condo-upload ng-cloak" co-upload data-ng-repeat="upload in uploads">
+			<div class="condo-upload ng-cloak" co-upload data-ng-repeat="file in files">
 				<div class="description">
 					<table>
 						<tr>
 							<td class="icon image"></td>
-							<td class="name">{{upload.path}}{{upload.name}}</td>
+							<td class="name">{{file.dir_path}}{{file.name}}</td>
 						</tr>
 					</table>
 				</div>
 				<div class="stats">
 					<table>
 						<tr>
-							<td class="controls image" ng-class="{'paused':paused, 'uploading':!paused}" ng-click="playpause(upload)"></td>
+							<td class="controls image" ng-class="{'paused':paused, 'uploading':!paused}" ng-click="playpause(file)"></td>
 							<td class="progressbar">
 								<div class="progressbar" role="progressbar" aria-live="polite" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">
 									<div class="bar" ng-style="{ 'width': progress + '%' }" ></div>
 									<div class="message">
-										{{upload.message}}
+										{{file.message}}
 									</div>
 								</div>
 							</td>
 							<td class="size">{{size}}</td>
-							<td ng-click="animate_remove(upload, 900)" class="abort image"></td>
+							<td ng-click="animate_remove(file, 900)" class="abort image"></td>
 						</tr>
 					</table>
 				</div>

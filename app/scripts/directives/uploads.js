@@ -43,16 +43,16 @@
 						if (newValue === undefined) {
 							scope.selected = undefined;
 						} else {
-							scope.selected = scope.uploads[scope.selected_index];
+							scope.selected = scope.files[scope.selected_index];
 						}
 					});
 
 					scope.prettyProgress = function() {
 						if (scope.selected)
-						return Math.round(scope.selected.progress / 360 * 100);
+						return Math.round(scope.selected.upload.progress / 360 * 100);
 					};
 
-					scope.$watch('selected.state', function(newValue, oldValue) {
+					scope.$watch('selected.upload.state', function(newValue, oldValue) {
 						scope.circle_style = {
 							pending: newValue < UPLOADING && newValue != PAUSED,
 							paused: newValue == PAUSED,
@@ -65,22 +65,22 @@
 					// ------------MOCK:
 
 					scope.selected_index = undefined;
-					scope.uploads = [];
+					scope.files = [];
 
 					//scope.uploads[scope.selected].name ;
 					//scope.uploads[scope.selected].size ;
 
 					var update = function() {
-						scope.selected.progress += 1;
-						if (scope.selected.progress >= 360) {
-							scope.selected.state = COMPLETED;
+						scope.selected.upload.progress += 1;
+						if (scope.selected.upload.progress >= 360) {
+							scope.selected.upload.state = COMPLETED;
 
 							$timeout(function() {
-								scope.selected.state = UPLOADING;
-								scope.selected.progress = 50;
+								scope.selected.upload.state = UPLOADING;
+								scope.selected.upload.progress = 50;
 
 								$timeout(function() {
-									scope.selected.progress = 250;
+									scope.selected.upload.progress = 250;
 									update();
 								}, 5000);
 							}, 2000);
@@ -101,16 +101,18 @@
 					};
 
 					$timeout(function() {
-						scope.uploads = [{
-							progress: 0,
+						scope.files = [{
 							size: 360,
 							name: 'somefile.jpg',
-							state: PENDING
+							upload: {
+								state: PENDING,
+								progress: 0
+							}
 						}];
 						scope.selected_index = 0;
 
 						$timeout(function() {
-							scope.selected.state = UPLOADING;
+							scope.selected.upload.state = UPLOADING;
 							update();
 						}, 3000);
 					}, 4000);

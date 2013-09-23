@@ -93,17 +93,21 @@ div.condo-uploads-wrapper {
                     position:relative;
                     overflow: hidden!important;
 
-                    &> input {
-                        font-size: 80px;
-                        position:absolute;
-                        top:-2px;
-                        left:-2px;
-
+                    form {
                         margin: 0;
-                        padding: 0;
-                        
-                        opacity: 0;
-                        z-index: 2;
+
+                        input {
+                            font-size: 80px;
+                            position:absolute;
+                            top:-2px;
+                            left:-2px;
+
+                            margin: 0;
+                            padding: 0;
+                            
+                            opacity: 0;
+                            z-index: 2;
+                        }
                     }
                 }
 
@@ -314,38 +318,11 @@ div.condo-upload {
                                 height: 100%;
                                 background-color: $progressBarColor;
 
-
-                                &.animate {
-                                    background-attachment: scroll;
-                                    
-                                    -webkit-animation-name: progressBarBG;
-                                    -moz-animation-name: progressBarBG;
-                                    -ms-animation-name: progressBarBG;
-                                    -o-animation-name: progressBarBG;
-                                    animation-name: progressBarBG;
-                                    
-                                    -webkit-animation-duration: .2s;
-                                    -webkit-animation-iteration-count: infinite;
-                                    -webkit-animation-timing-function: linear;
-                                    -moz-animation-duration: .2s;
-                                    -moz-animation-iteration-count: infinite;
-                                    -moz-animation-timing-function: linear;
-                                    -ms-animation-duration: .2s;
-                                    -ms-animation-iteration-count: infinite;
-                                    -ms-animation-timing-function: linear;
-                                    -o-animation-duration: .2s;
-                                    -o-animation-iteration-count: infinite;
-                                    -o-animation-timing-function: linear;
-                                    animation-duration: .2s;
-                                    animation-iteration-count: infinite;
-                                    animation-timing-function: linear;
-                                    
-                                    -webkit-transition: width 0.2s;
-                                    -moz-transition: width 0.2s;
-                                    -ms-transition: width 0.2s;
-                                    -o-transition: width 0.2s;
-                                    transition: width 0.2s;
-                                }
+                                -webkit-transition: width 0.3s linear;
+                                -moz-transition: width 0.3s linear;
+                                -ms-transition: width 0.3s linear;
+                                -o-transition: width 0.3s linear;
+                                transition: width 0.3s linear;
                             }
 
                         }
@@ -355,51 +332,4 @@ div.condo-upload {
         }
     }
 }
-
-@-webkit-keyframes progressBarBG {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: 2.3em 0;
-    }
-}
-
-@-moz-keyframes progressBarBG {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: 2.3em 0;
-    }
-}
-
-@-ms-keyframes progressBarBG {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: 2.3em 0;
-    }
-}
-
-@-o-keyframes progressBarBG {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: 2.3em 0;
-    }
-}
-
-@keyframes progressBarBG {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: 2.3em 0;
-    }
-}
-
-
 

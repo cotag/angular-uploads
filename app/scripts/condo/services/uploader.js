@@ -247,26 +247,15 @@
 						
 					} else {
 						return $q.reject({
-							type: 'error',
-							number: 0,
+							level: 'error',
+							data: 'missing required library',
 							file: the_file
 						});
 					}
 				}, function(reason) {
-					if(reason.status == 406) {
-						return $q.reject({
-							type: 'warn',
-							number: 0,
-							details: reason.data,
-							file: the_file
-						});
-					} else {
-						return $q.reject({
-							type: 'warn',
-							number: 1,
-							file: the_file
-						});
-					}
+					reason.file = the_file;
+					reason.level = 'warn';
+					return $q.reject(reason);
 				});
 			}
 		};

@@ -28,7 +28,6 @@
             var returnFalse = function () {return false;},
                 getManager = function(settings) {
                     var processing = undefined,
-                        updated = Date.now(),
                         pending = [],
                         files = [],
                         totalSize = 0,
@@ -36,7 +35,7 @@
 
                         // triggers updates and resolves the promise
                         completeProcess = function() {
-                            updated = Date.now();
+                            api.lastUpdated = Date.now();
                             processing.resolve(filesAdded);
                             processing = undefined;
                         },
@@ -66,7 +65,7 @@
                                                         folders: false
                                                     });
                                                 }
-                                                $window.timeout(processPending, 0);
+                                                $window.setTimeout(processPending, 0);
                                             }
                                         },
                                         processEntry = function(entry, path) {
@@ -88,8 +87,11 @@
                                                         if(path.length > 0) {
                                                             file.dir_path = path;
                                                         }
+
+                                                        if (file.size > 0) {
+                                                            new_items.push(file);
+                                                        }
                                                         
-                                                        new_items.push(file);
                                                         checkCount();
                                                     });
                                                 } else {
@@ -111,7 +113,10 @@
                                             if(!!obj.getAsEntry) {
                                                 entry = obj.getAsEntry();
                                             } else {
-                                                new_items.push(obj.getAsFile());    // Opera support
+                                                entry = obj.getAsFile() // Opera support
+                                                if (entry.size > 0) {
+                                                    new_items.push(entry);
+                                                }
                                                 checkCount();
                                                 continue;
                                             }
@@ -124,7 +129,7 @@
                                 } else {
                                     files.push.apply(files, items);
                                     // Delay until next tick (delay and invoke apply are optional)
-                                    $window.timeout(processPending, 0);
+                                    $window.setTimeout(processPending, 0);
                                 }
                             } else {
                                 $safeApply(completeProcess);
@@ -140,7 +145,7 @@
                             // Check if items or files
                             if (!!files[0].kind) {
                                 pending.push({
-                                    items: event.originalEvent.dataTransfer.items,
+                                    items: files,
                                     folders: true,
                                     path: ''
                                 });
@@ -168,25 +173,53 @@
 
                             // promise to provide an update to listeners
                             processing.promise;
+                        },
+
+                        // TODO::
+                        sortAttr = 'added',
+                        sortDesc = false,
+                        sortFunc = function(a, b) {
+                            if (sortDesc) {
+
+                            } else {
+
+                            }
+                        },
+                        api = {
+                            orderBy: 'attribute name and trigger update',
+                            retrieve: function(start, end) {
+                                if (end === undefined) {
+                                    end = start;
+                                    start = 0;
+                                }
+
+                                return files.slice(start, end);
+                            },
+                            folder: returnFalse,
+                            add: addFiles,
+                            remove: function () {
+                                var args = arguments,
+                                    i = 0,
+                                    index;
+
+                                for (; i < args.length; i += 1) {
+                                    index = files.indexOf(args[i]);
+                                    if (index >= 0) {
+                                        files.splice(index, 1);
+                                    }
+                                }
+                            },
+                            fileCount: function () {
+                                return files.length;
+                            },
+                            folderSize: function () {
+                                return totalSize;
+                            },
+                            lastUpdated: Date.now()
                         };
 
                     // The public API
-                    return {
-                        orderBy: 'attribute name and trigger update',
-                        retrieve: 'range of files',
-                        folder: returnFalse,
-                        add: addFiles,
-                        remove: 'files from the list then trigger update + promise',
-                        fileCount: function () {
-                            return files.length;
-                        },
-                        folderSize: function () {
-                            return totalSize;
-                        },
-                        lastUpdated: function () {
-                            return updated;
-                        }
-                    };
+                    return api;
                 };
             
             return {

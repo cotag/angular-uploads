@@ -26,125 +26,68 @@
     //
     // create a directive for attaching the input events
     //
-    directive('coUploads', ['Condo.Config', '$timeout', '$safeApply', function(options, $timeout, safeApply) {
+    directive('coUploads', ['Condo.Config', '$timeout', '$safeApply', 'Condo.UploadManager', function(options, $timeout, safeApply, fileMan) {
+
         return {
-            controller: 'Condo.Controller',
-            link: function(scope, element, attrs) {
+            controller: ['$scope', 'Condo.Api', function(scope, api) {
+                scope.abort = function(file) {
+                    if (file.upload) {
+                        file.upload.abort();
+                        
+                    }
+                };
                 
-                //
-                // Add files with their path information to the system
-                //    Queue items here until we decide they should be added to the view
-                //
-                var processPending = function() {
-                    var avaliable = view_limit - scope.upload_count;
-                    
-                    if(avaliable > 0 && pending_items.length > 0) {
-                        
-                        var item = pending_items.shift(),
-                            items = item.items,
-                            length = items.length;
-                        
-                        if(item.folders) {
-                            var i = 0,
-                                entry,
-                                obj,
-                                count = 0,
-                                new_items = [],
-                                processEntry = function(entry, path) {
-                                    //
-                                    // If it is a directory we add it to the pending queue
-                                    //
-                                    try {
-                                        if (entry.isDirectory) {
-                                            entry.createReader().readEntries(function(entries) {
-                                                
-                                                pending_items.push({
-                                                    items: entries,
-                                                    folders: true,
-                                                    path: path + entry.name + '/'
-                                                });
-                                                checkCount();
-                                            });
-                                        } else if (entry.isFile) {            // Files are added to a file queue
-                                            entry.file(function(file) {
-                                                if(path.length > 0)
-                                                    file.dir_path = path;
-                                                
-                                                new_items.push(file);
-                                                
-                                                checkCount();
-                                            });
-                                        } else {
-                                            checkCount();
-                                        }
-                                    } catch(err) {
-                                        //
-                                        // TODO:: hmmmm
-                                        //
-                                        checkCount();
-                                    }
-        
-                                },
-                                checkCount = function() {
-                                    //
-                                    // Counts the entries processed so we can add any files to the queue
-                                    //
-                                    count += 1;
-                                    if (count >= length) {
-                                        if(new_items.length > 0) {
-                                            pending_items.unshift({    // add any files to the start of the queue
-                                                items: new_items,
-                                                folders: false
-                                            });
-                                        }
-                                        safeApply(scope, function() {
-                                            $timeout(processPending);
-                                        });
-                                    }
-                                };
-                            
-                            for (; i < length; i++) {
-                                
-                                //
-                                // first layer of DnD folders require you to getAsEntry
-                                //
-                                if(item.path.length == 0) {
-                                    obj = items[i];
-                                    obj.getAsEntry = obj.getAsEntry || obj.webkitGetAsEntry || obj.mozGetAsEntry;
-                                    if(!!obj.getAsEntry) {
-                                        entry = obj.getAsEntry();
-                                    } else {
-                                        new_items.push(obj.getAsFile());    // Opera support
-                                        checkCount();
-                                        continue;
-                                    }
-                                } else {
-                                    entry = items[i];
-                                }
-                                processEntry(entry, item.path);
-                            }
-                        } else if(length <= avaliable) {        // Regular files where we can add them all at once
-                            scope.add(items);
-                            $timeout(processPending);        // Delay until next tick (delay and invoke apply are optional)
-                        } else {                            // Regular file where we can't add them all at once
-                            scope.add(items.splice(0, avaliable));
-                            pending_items.unshift(item);
+                
+                scope.playpause = function(file) {
+                    if (file.upload && file.upload.state == 3) {                 // Uploading
+                        file.upload.pause();
+                    } else if (file.upload) {
+                        file.upload.start();
+                    } else {
+                        file.upload = {
+                            start: function() {},   // suppress errors
+                            abort: function() {}
+                        };
+                        file.message = 'checking...';
+                        if(options.file_checker(file) && (!options.size_limit || file.size <= options.size_limit)) {
+                            api.check_provider(scope.endpoint, file).then(function(upload) {
+                                file.upload = upload;
+                                upload.start();
+                            }, function(failure) {
+                                file.message = 'server rejected';
+                                delete file.upload;
+                            });
+                        } else {
+                            // File did not pass client side checks
+                            file.message = 'file not supported';
                         }
                     }
-                },
-                view_limit = 50,    // Number of uploads that should be displayed at once
-                pending_items = [];    // These are files or folders that have not been processed yet as we are at the view port limit
-                                    
-                
+                };
+
+                scope.humanReadableByteCount = function(bytes, si) {
+                    var unit = si ? 1000.0 : 1024.0;
+                    if (bytes < unit) return bytes + (si ? ' iB' : ' B');
+                    var exp = Math.floor(Math.log(bytes) / Math.log(unit)),
+                        pre = (si ? 'kMGTPE' : 'KMGTPE').charAt(exp-1) + (si ? 'iB' : 'B');
+                    return (bytes / Math.pow(unit, exp)).toFixed(1) + ' ' + pre;
+                };
+            }],
+            link: function(scope, element, attrs) {
+                var uploadsRunning = 0;
             
                 //
-                // Set some defaults
-                //    
+                // See Condo.Config for configuration options
+                //
+                scope.endpoint = options.endpoint;
+                scope.autostart = options.autostart;
+                scope.ignore_errors = options.ignore_errors;            // Continue to autostart after an error?
+                scope.parallelism = options.parallelism;                // number of uploads at once
                 options.delegate = options.delegate || element;
                 options.drop_targets = options.drop_targets || element;
                 
                 scope.options = options;
-                scope.remove_completed = false;    // Remove completed uploads automatically    
+                scope.remove_completed = false;    // Remove completed uploads automatically
+                scope.uploadManager = fileMan.newManager();
                 
                 
                 //
@@ -170,30 +113,8 @@
                     event.preventDefault();
                     event.stopPropagation();
                     
-                    
-                    if (!!event.originalEvent.dataTransfer.items) {
-                        pending_items.push({
-                            items: event.originalEvent.dataTransfer.items,
-                            folders: true,
-                            path: ''
-                        });
-                    } else if(!!event.originalEvent.dataTransfer.files) {
-                        var files = event.originalEvent.dataTransfer.files,
-                            copy = [],
-                            i = 0;
-                    
-                        for (; i < files.length; i += 1)
-                            copy.push(files[i]);
-                        
-                        pending_items.push({
-                            items: copy,
-                            folders: false
-                        });
-                    }
-                    
-                    safeApply(scope, function() {    
-                        processPending();
-                    });
+                    scope.uploadManager.add(event.originalEvent.dataTransfer.items ||
+                                            event.originalEvent.dataTransfer.files);
                 }).on('dragover.condo', options.drop_targets, function(event) {
                     angular.element(this).addClass(options.hover_class);
                     
@@ -209,31 +130,8 @@
                 // Detect manual file uploads
                 //
                 on('change.condo', ':file', function(event) {
-                    var files = angular.element(this)[0].files,
-                        copy = [],
-                        i = 0;
-                    
-                    for (; i < files.length; i += 1)
-                        copy.push(files[i]);
-                        
+                    scope.uploadManager.add(angular.element(this)[0].files);
                     angular.element(this).parents('form')[0].reset();
-                    
-                    pending_items.push({
-                        items: copy,
-                        folders: false
-                    });
-                    
-                    safeApply(scope, function() {
-                        processPending();
-                    });
-                });
-                
-                
-                //
-                // Add new uploads if possible
-                //
-                scope.$watch('upload_count', function(newValue, oldValue) {
-                    processPending();
                 });
                 
                 
@@ -244,6 +142,37 @@
                     options.drop_targets.off('.condo');
                     options.delegate.off('.condo');
                     element.removeClass('supports-svg').removeClass('no-svg');
+                });
+
+
+                
+
+
+                //
+                // Watch autostart and trigger a check when it is changed
+                //
+                scope.$watch('autostart', function(newValue, oldValue) {
+                    if (newValue === true) {
+                        
+                    }
+                });
+                
+                
+                //
+                // Autostart more uploads as this is bumped up
+                //
+                scope.$watch('parallelism', function(newValue, oldValue) {
+                    if(newValue > oldValue) {
+                        
+                    }
+                });
+
+
+                // Watch for addition of new files
+                scope.$watch('uploadManager.lastUpdated', function(newValue, oldValue) {
+                    //scope.files << scope.uploadManager.retrieve(50);
+                    var files = scope.uploadManager.retrieve(50);
+                    scope.files.push.apply(scope.files, files);
                 });
                 
                 
@@ -257,22 +186,13 @@
                 //    }
                 //
                 var messages = {
-                    warn: ['file not accepted', 'file add failed - server error'],
+                    warn: ['file not accepted', 'file add failed - server rejected'],
                     error: ['file add failed - missing required uploader', 'failed to load file fingerprinting component']
                 };
                 scope.$on('coNotice', function(event, data) {
                     if(!options.supress_notifications && data.type != 'info')
                         alert(data.type + ': ' + messages[data.type][data.number]);
                 });
-                
-                
-                scope.humanReadableByteCount = function(bytes, si) {
-                    var unit = si ? 1000.0 : 1024.0;
-                    if (bytes < unit) return bytes + (si ? ' iB' : ' B');
-                    var exp = Math.floor(Math.log(bytes) / Math.log(unit)),
-                        pre = (si ? 'kMGTPE' : 'KMGTPE').charAt(exp-1) + (si ? 'iB' : 'B');
-                    return (bytes / Math.pow(unit, exp)).toFixed(1) + ' ' + pre;
-                }
             }
         }
     }]).
@@ -292,58 +212,66 @@
         
         return function(scope, element, attrs) {
             
-            scope.size = scope.humanReadableByteCount(scope.upload.size, false);
+            scope.size = scope.humanReadableByteCount(scope.file.size, false);
             scope.progress = 0;
             scope.paused = true;
             
-            scope.$watch('upload.state', function(newValue, oldValue) {
+            scope.$watch('file.upload.state', function(newValue, oldValue) {
                 switch(newValue) {
                     case STARTED:
                         scope.paused = false;
-                        scope.upload.message = 'starting...';
+                        scope.file.message = 'starting...';
                         break;
                         
                     case UPLOADING:
                         element.find('div.bar').addClass('animate');
-                        scope.upload.message = undefined;
+                        scope.file.message = undefined;
                         scope.paused = false;
                         break;
                         
                     case COMPLETED:
-                        scope.upload.message = 'complete';
+                        scope.file.message = 'complete';
                         element.find('td.controls').replaceWith( '<td class="blank" />' );
                         element.find('div.bar').removeClass('animate');
                         
-                        if(scope.remove_completed)
+                        if(scope.remove_completed) {
                             scope.animate_remove();
-                        else
-                            scope.check_autostart();    // Couldn't work out how to put this into the controller
+                        } else {
+                            
+                        }
                         break;
                         
                     case PAUSED:
                         element.find('div.bar').removeClass('animate');
-                        if (scope.upload.message === undefined)
-                            scope.upload.message = 'paused';
+                        if (scope.file.message === undefined) {
+                            scope.file.message = 'paused';
+                        }
                             
                         scope.paused = true;
                         // No need for break
                         
-                        if (scope.ignore_errors && scope.upload.error)
-                            scope.check_autostart();    // Couldn't work out how to put this into the controller
+                        if (scope.ignore_errors && scope.file.upload && scope.file.upload.error) {
+                            
+                        }
                 }
             });
             
-            scope.$watch('upload.progress', function(newValue, oldValue) {
-                scope.progress = newValue / scope.upload.size * 100;
+            scope.$watch('file.upload.progress', function(newValue, oldValue) {
+                scope.progress = (newValue || 0) / scope.file.size * 100;
+            });
+
+            scope.$watch('file.upload.message', function(newValue, oldValue) {
+                scope.file.message = newValue;
             });
             
-            
             scope.animate_remove = function() {
-                scope.abort(scope.upload);
+                if (scope.file.upload) {
+                    scope.file.upload.abort();
+                }
                 
                 element.fadeOut(800, function() {
                     safeApply(scope, function() {
-                        scope.remove(scope.upload);
+                        scope.uploadManager.remove(scope.file);
                     });
                 });
             };
