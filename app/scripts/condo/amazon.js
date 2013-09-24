@@ -135,15 +135,16 @@
 				// AJAX for upload goes here
 				//
 				data['data'] = file;
-				api.process_request(data, function(progress) {
-					self.progress = progress;
-				}).then(function(result) {
-					finalising = true;
-		        	$this.resume();				// Resume informs the application that the upload is complete
-				}, function(reason) {
-					self.progress = 0;
-					defaultError(reason);
-				});
+				api.process_request(data)
+					.then(function(result) {
+						finalising = true;
+			        	$this.resume();				// Resume informs the application that the upload is complete
+					}, function(reason) {
+						self.progress = 0;
+						defaultError(reason);
+					}, function(progress) {
+						self.progress = progress;
+					});
 			}, // END DIRECT
 
 
@@ -211,15 +212,15 @@
 				//
 				set_part = function(request, part_info) {
 					request['data'] = part_info.data;
-					api.process_request(request, function(progress) {
-						self.progress = (part_info.part_number - 1) * part_size + progress;
-					}).then(function(result) {
+					api.process_request(request).then(function(result) {
 						part_ids.push(part_info.data_id);	// We need to record the list of part IDs for completion
 			        		last_part = part_info.part_number;
 			        		next_part(last_part + 1);
 					}, function(reason) {
 						self.progress = (part_info.part_number - 1) * part_size;
 						defaultError(reason);
+					}, function(progress) {
+						self.progress = (part_info.part_number - 1) * part_size + progress;
 					});
 				};
 					

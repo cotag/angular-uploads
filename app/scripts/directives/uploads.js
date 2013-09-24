@@ -65,7 +65,6 @@
 					// ------------MOCK:
 
 					scope.selected_index = undefined;
-					scope.files = [];
 
 					//scope.uploads[scope.selected].name ;
 					//scope.uploads[scope.selected].size ;

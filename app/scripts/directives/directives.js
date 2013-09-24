@@ -29,15 +29,7 @@
     directive('coUploads', ['Condo.Config', '$timeout', '$safeApply', 'Condo.UploadManager', function(options, $timeout, safeApply, fileMan) {
 
         return {
-            controller: ['$scope', 'Condo.Api', function(scope, api) {
-                scope.abort = function(file) {
-                    if (file.upload) {
-                        file.upload.abort();
-                        
-                    }
-                };
-                
-                
+            controller: ['$scope', 'Condo.Api', function(scope, api) {                
                 scope.playpause = function(file) {
                     if (file.upload && file.upload.state == 3) {                 // Uploading
                         file.upload.pause();
@@ -63,14 +55,6 @@
                         }
                     }
                 };
-
-                scope.humanReadableByteCount = function(bytes, si) {
-                    var unit = si ? 1000.0 : 1024.0;
-                    if (bytes < unit) return bytes + (si ? ' iB' : ' B');
-                    var exp = Math.floor(Math.log(bytes) / Math.log(unit)),
-                        pre = (si ? 'kMGTPE' : 'KMGTPE').charAt(exp-1) + (si ? 'iB' : 'B');
-                    return (bytes / Math.pow(unit, exp)).toFixed(1) + ' ' + pre;
-                };
             }],
             link: function(scope, element, attrs) {
                 var uploadsRunning = 0;
@@ -87,7 +71,8 @@
                 
                 scope.options = options;
                 scope.remove_completed = false;    // Remove completed uploads automatically
-                scope.uploadManager = fileMan.newManager();
+                scope.manager = fileMan.newManager();
+                scope.height = 35;
                 
                 
                 //
@@ -113,7 +98,7 @@
                     event.preventDefault();
                     event.stopPropagation();
                     
-                    scope.uploadManager.add(event.originalEvent.dataTransfer.items ||
+                    scope.manager.add(event.originalEvent.dataTransfer.items ||
                                             event.originalEvent.dataTransfer.files);
                 }).on('dragover.condo', options.drop_targets, function(event) {
                     angular.element(this).addClass(options.hover_class);
@@ -130,7 +115,7 @@
                 // Detect manual file uploads
                 //
                 on('change.condo', ':file', function(event) {
-                    scope.uploadManager.add(angular.element(this)[0].files);
+                    scope.manager.add(angular.element(this)[0].files);
                     angular.element(this).parents('form')[0].reset();
                 });
                 
@@ -166,14 +151,6 @@
                         
                     }
                 });
-
-
-                // Watch for addition of new files
-                scope.$watch('uploadManager.lastUpdated', function(newValue, oldValue) {
-                    //scope.files << scope.uploadManager.retrieve(50);
-                    var files = scope.uploadManager.retrieve(50);
-                    scope.files.push.apply(scope.files, files);
-                });
                 
                 
                 //
@@ -208,11 +185,19 @@
             PAUSED = 2,
             UPLOADING = 3,
             COMPLETED = 4,
-            ABORTED = 5;
+            ABORTED = 5,
+
+            humanReadableByteCount = function(bytes, si) {
+                var unit = si ? 1000.0 : 1024.0;
+                if (bytes < unit) return bytes + (si ? ' iB' : ' B');
+                var exp = Math.floor(Math.log(bytes) / Math.log(unit)),
+                    pre = (si ? 'kMGTPE' : 'KMGTPE').charAt(exp-1) + (si ? 'iB' : 'B');
+                return (bytes / Math.pow(unit, exp)).toFixed(1) + ' ' + pre;
+            };
         
         return function(scope, element, attrs) {
             
-            scope.size = scope.humanReadableByteCount(scope.file.size, false);
+            scope.size = humanReadableByteCount(scope.file.size, false);
             scope.progress = 0;
             scope.paused = true;
             
@@ -271,7 +256,7 @@
                 
                 element.fadeOut(800, function() {
                     safeApply(scope, function() {
-                        scope.uploadManager.remove(scope.file);
+                        scope.manager.remove(scope.file);
                     });
                 });
             };

@@ -1,4 +1,4 @@
-<div class="condo-uploads-wrapper" data-co-uploads>
+<div class="condo-uploads-wrapper" upload-main co-uploads>
 
 	<div class="condo-file-selection">
 
@@ -34,7 +34,7 @@
 
 		<h1>Cloud File Uploads</h1>
 
-		<div upload-main class="upload-container">
+		<div class="upload-container">
 			<cirgress progress="selected.upload.progress" total="selected.size">
 				<div class="co-circle work" ng-class="{pending: circle_style.pending}"></div>
 				<div ng-class="{hide: selected, waiting: !selected}">
@@ -54,7 +54,8 @@
 	</div>
 	<div class="condo-uploads-container">
 		<div class="condo-uploads">		<!-- NOTE:: Controller Name: UploadsCtrl -->
-			<div class="condo-upload ng-cloak" co-upload data-ng-repeat="file in files">
+		<div list>
+			<div class="condo-upload ng-cloak" co-upload ng-repeat="file in files">
 				<div class="description">
 					<table>
 						<tr>
@@ -81,6 +82,8 @@
 					</table>
 				</div>
 			</div>
+		</div>
+
 		</div>
 	</div>
 </div>

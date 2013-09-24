@@ -16,5 +16,5 @@
 
 (function (angular) {
 	'use strict';
-	angular.module('Condo', ['SafeApply']);
+	angular.module('Condo', ['SafeApply', 'coList']);
 }(this.angular));

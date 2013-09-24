@@ -33,9 +33,13 @@
                         totalSize = 0,
                         filesAdded = 0,
 
-                        // triggers updates and resolves the promise
-                        completeProcess = function() {
+                        refreshTimeStamp = function () {
                             api.lastUpdated = Date.now();
+                        },
+
+                        // triggers updates and resolves the promise
+                        completeProcess = function () {
+                            refreshTimeStamp();
                             processing.resolve(filesAdded);
                             processing = undefined;
                         },
@@ -46,6 +50,11 @@
                                 var item = pending.shift(),
                                     items = item.items,
                                     length = items.length;
+
+                                if (length === 0 || length === undefined) {
+                                    $window.setTimeout(processPending, 0);
+                                    return;
+                                }
                                 
                                 if(item.folders) {
                                     var i = 0,
@@ -200,13 +209,19 @@
                             remove: function () {
                                 var args = arguments,
                                     i = 0,
+                                    removed = false,
                                     index;
 
                                 for (; i < args.length; i += 1) {
                                     index = files.indexOf(args[i]);
                                     if (index >= 0) {
+                                        removed = true;
                                         files.splice(index, 1);
                                     }
+                                }
+
+                                if (removed === true) {
+                                    $safeApply(refreshTimeStamp);
                                 }
                             },
                             fileCount: function () {

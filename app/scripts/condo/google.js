@@ -121,15 +121,16 @@
 				// AJAX for upload goes here
 				//
 				data['data'] = file;
-				api.process_request(data, function(progress) {
-					self.progress = progress;
-				}).then(function() {
-					finalising = true;
-		        	$this.resume();				// Resume informs the application that the upload is complete
-				}, function(reason) {
-					self.progress = 0;
-					defaultError(reason);
-				});
+				api.process_request(data)
+					.then(function() {
+						finalising = true;
+			        	$this.resume();				// Resume informs the application that the upload is complete
+					}, function(reason) {
+						self.progress = 0;
+						defaultError(reason);
+					}, function(progress) {
+						self.progress = progress;
+					});
 			}, // END DIRECT
 
 
@@ -153,14 +154,15 @@
 
 					resume_upload = function(request, file_hash, range_start) {
 						request.data = file_hash.data;
-						api.process_request(request, function(progress) {
-							self.progress = range_start + progress;
-						}).then(function(result) {
-							finalising = true;
-							completeUpload();
-						}, function(reason) {
-							defaultError(reason);
-						});
+						api.process_request(request)
+							.then(function(result) {
+								finalising = true;
+								completeUpload();
+							}, function(reason) {
+								defaultError(reason);
+							}, function(progress) {
+								self.progress = range_start + progress;
+							});
 					};
 
 				
