@@ -89,7 +89,7 @@ div.condo-uploads-wrapper {
                 display: inline-block;
                 height: 100%;
 
-                button {
+                div.btn {
                     position:relative;
                     overflow: hidden!important;
 
@@ -100,7 +100,7 @@ div.condo-uploads-wrapper {
                             font-size: 80px;
                             position:absolute;
                             top:-2px;
-                            left:-2px;
+                            right:-2px;
 
                             margin: 0;
                             padding: 0;

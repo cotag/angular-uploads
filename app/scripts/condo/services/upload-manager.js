@@ -9,25 +9,23 @@
 * 
 *     
 *     References:
-*        * http://docs.angularjs.org/api/ng.$http
-*        * http://docs.angularjs.org/api/ng.$q
+*        * 
 *
 **/
 
 
-(function(angular) {
+(function (angular) {
     'use strict';
-    
+
     angular.module('Condo').
 
         // Handles the list of files being uploaded
         // Abstracting the list from the view itself
-        factory('Condo.UploadManager', ['$window', '$q', '$safeApply', function($window, $q, $safeApply) {
-            
+        factory('Condo.UploadManager', ['$window', '$q', '$safeApply', function ($window, $q, $safeApply) {
 
-            var returnFalse = function () {return false;},
-                getManager = function(settings) {
-                    var processing = undefined,
+            var returnFalse = function () { return false; },
+                getManager = function () {
+                    var processing,
                         pending = [],
                         files = [],
                         totalSize = 0,
@@ -55,20 +53,20 @@
                                     $window.setTimeout(processPending, 0);
                                     return;
                                 }
-                                
-                                if(item.folders) {
-                                    var i = 0,
+
+                                if (item.folders) {
+                                    var i,
                                         entry,
                                         obj,
                                         count = 0,
                                         new_items = [],
-                                        checkCount = function() {
+                                        checkCount = function () {
                                             //
                                             // Counts the entries processed so we can add any files to the queue
                                             //
                                             count += 1;
                                             if (count >= length) {
-                                                if(new_items.length > 0) {
+                                                if (new_items.length > 0) {
                                                     pending.unshift({    // add any files to the start of the queue
                                                         items: new_items,
                                                         folders: false
@@ -77,7 +75,7 @@
                                                 $window.setTimeout(processPending, 0);
                                             }
                                         },
-                                        processEntry = function(entry, path) {
+                                        processEntry = function (entry, path) {
                                             //
                                             // If it is a directory we add it to the pending queue
                                             //
@@ -93,46 +91,46 @@
                                                     });
                                                 } else if (entry.isFile) {            // Files are added to a file queue
                                                     entry.file(function (file) {
-                                                        if(path.length > 0) {
+                                                        if (path.length > 0) {
                                                             file.dir_path = path;
                                                         }
 
                                                         if (file.size > 0) {
                                                             new_items.push(file);
                                                         }
-                                                        
+
                                                         checkCount();
                                                     });
                                                 } else {
                                                     checkCount();
                                                 }
-                                            } catch(err) {
+                                            } catch (err) {
                                                 checkCount();
                                             }
                                         };
-                                    
-                                    for (; i < length; i++) {
-                                        
+
+                                    for (i = 0; i < length; i += 1) {
+
                                         //
                                         // first layer of DnD folders require you to getAsEntry
                                         //
-                                        if(item.path.length == 0) {
+                                        if (item.path.length === 0) {
                                             obj = items[i];
                                             obj.getAsEntry = obj.getAsEntry || obj.webkitGetAsEntry || obj.mozGetAsEntry || obj.msGetAsEntry;
-                                            if(!!obj.getAsEntry) {
+                                            if (!!obj.getAsEntry) {
                                                 entry = obj.getAsEntry();
+                                                processEntry(entry, item.path);
                                             } else {
-                                                entry = obj.getAsFile() // Opera support
+                                                entry = obj.getAsFile(); // Opera support
                                                 if (entry.size > 0) {
                                                     new_items.push(entry);
                                                 }
                                                 checkCount();
-                                                continue;
                                             }
                                         } else {
                                             entry = items[i];
+                                            processEntry(entry, item.path);
                                         }
-                                        processEntry(entry, item.path);
                                     }
                                 // Regular files where we can add them all at once
                                 } else {
@@ -160,11 +158,13 @@
                                 });
                             } else {
                                 var copy = [],
-                                    i = 0;
+                                    i;
 
                                 // Clone the files array
-                                for (; i < files.length; i += 1) {
-                                    copy.push(files[i]);
+                                for (i = 0; i < files.length; i += 1) {
+                                    if (files[i].size > 0) {    // ensure the file has some contents
+                                        copy.push(files[i]);
+                                    }
                                 }
 
                                 // Add to pending
@@ -181,13 +181,13 @@
                             }
 
                             // promise to provide an update to listeners
-                            processing.promise;
+                            return processing.promise;
                         },
 
                         // TODO::
                         sortAttr = 'added',
                         sortDesc = false,
-                        sortFunc = function(a, b) {
+                        sortFunc = function (a, b) {
                             if (sortDesc) {
 
                             } else {
@@ -196,7 +196,7 @@
                         },
                         api = {
                             orderBy: 'attribute name and trigger update',
-                            retrieve: function(start, end) {
+                            retrieve: function (start, end) {
                                 if (end === undefined) {
                                     end = start;
                                     start = 0;
@@ -208,11 +208,11 @@
                             add: addFiles,
                             remove: function () {
                                 var args = arguments,
-                                    i = 0,
+                                    i,
                                     removed = false,
                                     index;
 
-                                for (; i < args.length; i += 1) {
+                                for (i = 0; i < args.length; i += 1) {
                                     index = files.indexOf(args[i]);
                                     if (index >= 0) {
                                         removed = true;
@@ -236,10 +236,10 @@
                     // The public API
                     return api;
                 };
-            
+
             return {
                 newManager: getManager
             };
         }]);
-    
+
 }(this.angular));

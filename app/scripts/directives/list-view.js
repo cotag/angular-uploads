@@ -22,7 +22,7 @@
         directive('list', ['$window', '$document', '$safeApply', '$animation', function ($window, $document, $safeApply, $animation) {
             return {
                 restrict: 'A',
-                link: function (scope, element, attr) {
+                link: function (scope, element) {
                     var spaceAbove = 0,
                         virtualHeight = 0,
                         position = element.offset().top,    // pos.top
@@ -45,7 +45,7 @@
                                 spaceAbove = 0;
                                 start = 0;
                             }
-                            
+
                             end = start + items + 1;
 
                             if (prevStart !== start || prevEnd !== end) {
@@ -54,7 +54,7 @@
                             } else {
                                 return false;
                             }
-                        }, function() {
+                        }, function () {
                             $safeApply(scope, function () {
                                 scope.files = scope.manager.retrieve(prevStart, prevEnd);
                                 element.css({
@@ -63,12 +63,12 @@
                                 });
                             });
                         }),
-                        resizing = function() {
+                        resizing = function () {
                             winHeight = elWindow.height();
                             items = Math.ceil(winHeight / scope.height) * scope.perRow;
                             updateFiles();
                         },
-                        scrolling = function() {
+                        scrolling = function () {
                             scrollTop = $document.scrollTop();
                             updateFiles();
                         };
@@ -79,20 +79,20 @@
 
                     $document.bind('scroll', scrolling);
                     elWindow.bind('resize', resizing);
-                    
+
                     // unbind the globals on destroy
-                    scope.$on('$destroy', function() {
+                    scope.$on('$destroy', function () {
                         $document.unbind('scroll', scrolling);
                         elWindow.unbind('resize', resizing);
                     });
 
-                    scope.$watch('manager.lastUpdated', function() {
+                    scope.$watch('manager.lastUpdated', function () {
                         virtualHeight = Math.ceil(scope.manager.fileCount() / scope.perRow) * scope.height;
                         prevStart = -1;
                         updateFiles();
                     });
 
-                    scope.$watch('height', function() {
+                    scope.$watch('height', function () {
                         resizing();
                         updateFiles();
                     });

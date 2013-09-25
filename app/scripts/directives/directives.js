@@ -98,8 +98,10 @@
                     event.preventDefault();
                     event.stopPropagation();
                     
-                    scope.manager.add(event.originalEvent.dataTransfer.items ||
-                                            event.originalEvent.dataTransfer.files);
+                    scope.manager.add(
+                        event.originalEvent.dataTransfer.items ||
+                        event.originalEvent.dataTransfer.files
+                    );
                 }).on('dragover.condo', options.drop_targets, function(event) {
                     angular.element(this).addClass(options.hover_class);
                     
@@ -179,7 +181,7 @@
     // The individual upload events
     //    Triggers the pause, resume, abort functions
     //
-    directive('coUpload', ['$safeApply', function(safeApply) {
+    directive('coUpload', ['$safeApply', function (safeApply) {
         var PENDING = 0,
             STARTED = 1,
             PAUSED = 2,
@@ -187,7 +189,7 @@
             COMPLETED = 4,
             ABORTED = 5,
 
-            humanReadableByteCount = function(bytes, si) {
+            humanReadableByteCount = function (bytes, si) {
                 var unit = si ? 1000.0 : 1024.0;
                 if (bytes < unit) return bytes + (si ? ' iB' : ' B');
                 var exp = Math.floor(Math.log(bytes) / Math.log(unit)),
@@ -201,7 +203,7 @@
             scope.progress = 0;
             scope.paused = true;
             
-            scope.$watch('file.upload.state', function(newValue, oldValue) {
+            scope.$watch('file.upload.state', function (newValue, oldValue) {
                 switch(newValue) {
                     case STARTED:
                         scope.paused = false;
@@ -241,21 +243,21 @@
                 }
             });
             
-            scope.$watch('file.upload.progress', function(newValue, oldValue) {
+            scope.$watch('file.upload.progress', function (newValue, oldValue) {
                 scope.progress = (newValue || 0) / scope.file.size * 100;
             });
 
-            scope.$watch('file.upload.message', function(newValue, oldValue) {
+            scope.$watch('file.upload.message', function (newValue, oldValue) {
                 scope.file.message = newValue;
             });
             
-            scope.animate_remove = function() {
+            scope.animate_remove = function () {
                 if (scope.file.upload) {
                     scope.file.upload.abort();
                 }
                 
-                element.fadeOut(800, function() {
-                    safeApply(scope, function() {
+                element.fadeOut(800, function () {
+                    safeApply(scope, function () {
                         scope.manager.remove(scope.file);
                     });
                 });
