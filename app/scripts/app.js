@@ -1,17 +1,15 @@
-'use strict';
 
-angular.module('angularUploadsApp', ['ngRoute', 'Condo', 'Circular'])
-  .config(['$routeProvider', function ($routeProvider) {
-    $routeProvider
-      .when('/', {
-        templateUrl: 'views/upload.html',
-        controller: 'MainCtrl'
-      })
-      .when('/new', {
-        templateUrl: 'views/upload2.html',
-        controller: 'MainCtrl'
-      })
-      .otherwise({
-        redirectTo: '/'
-      });
-  }]);
+(function (angular) {
+    'use strict';
+    angular.module('angularUploadsApp', ['ngRoute', 'Condo', 'Circular']).
+        config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+            $locationProvider.html5Mode(true);
+            $routeProvider
+                .when('/', {
+                    templateUrl: 'views/upload.html',
+                })
+                .otherwise({
+                    redirectTo: '/'
+                });
+        }]);
+}(this.angular));

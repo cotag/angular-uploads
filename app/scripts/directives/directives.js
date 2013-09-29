@@ -26,10 +26,15 @@
     //
     // create a directive for attaching the input events
     //
-    directive('coUploads', ['Condo.Config', '$timeout', '$safeApply', 'Condo.UploadManager', function(options, $timeout, safeApply, fileMan) {
+    directive('coUploads', ['$timeout', '$safeApply', 'Condo.UploadManager', function($timeout, safeApply, fileMan) {
 
         return {
-            controller: ['$scope', 'Condo.Api', function(scope, api) {                
+            controller: ['$scope', 'Condo.Api', function(scope, api) {
+                scope.size_limit = undefined;
+                scope.file_checker = function(file) {      // client side filtering of files
+                    return true;
+                };
+
                 scope.playpause = function(file) {
                     if (file.upload && file.upload.state == 3) {                 // Uploading
                         file.upload.pause();
@@ -41,7 +46,7 @@
                             abort: function() {}
                         };
                         file.message = 'checking...';
-                        if(options.file_checker(file) && (!options.size_limit || file.size <= options.size_limit)) {
+                        if(scope.file_checker(file) && (!scope.size_limit || file.size <= scope.size_limit)) {
                             api.check_provider(scope.endpoint, file).then(function(upload) {
                                 file.upload = upload;
                                 upload.start();
@@ -57,22 +62,23 @@
                 };
             }],
             link: function(scope, element, attrs) {
-                var uploadsRunning = 0;
+                var uploadsRunning = 0,
+                    delegate = element,
+                    drop_targets = element,
+                    hover_class = 'drag-hover',
+                    supress_notifications = false;
             
                 //
                 // See Condo.Config for configuration options
                 //
-                scope.endpoint = options.endpoint;
-                scope.autostart = options.autostart;
-                scope.ignore_errors = options.ignore_errors;            // Continue to autostart after an error?
-                scope.parallelism = options.parallelism;                // number of uploads at once
-                options.delegate = options.delegate || element;
-                options.drop_targets = options.drop_targets || element;
+                scope.endpoint = '/uploads';
+                scope.autostart = true;
+                scope.ignore_errors = true;            // Continue to autostart after an error?
+                scope.parallelism = 1;                // number of uploads at once
                 
-                scope.options = options;
                 scope.remove_completed = false;    // Remove completed uploads automatically
                 scope.manager = fileMan.newManager();
-                scope.height = 35;
+                scope.height = 35;  // TODO:: This needs to be dynamic
                 
                 
                 //
@@ -88,9 +94,9 @@
                 //
                 // Detect file drops
                 //
-                options.drop_targets = angular.element(options.drop_targets);
-                options.delegate = angular.element(options.delegate).on('drop.condo', options.drop_targets, function(event) {
-                    options.drop_targets.removeClass(options.hover_class);
+                drop_targets = angular.element(drop_targets);
+                delegate.on('drop.condo', drop_targets, function(event) {
+                    drop_targets.removeClass(hover_class);
                     
                     //
                     // Prevent propagation early (so any errors don't cause unwanted behaviour)
@@ -102,12 +108,12 @@
                         event.originalEvent.dataTransfer.items ||
                         event.originalEvent.dataTransfer.files
                     );
-                }).on('dragover.condo', options.drop_targets, function(event) {
-                    angular.element(this).addClass(options.hover_class);
+                }).on('dragover.condo', drop_targets, function(event) {
+                    angular.element(this).addClass(hover_class);
                     
                     return false;
-                }).on('dragleave.condo', options.drop_targets, function(event) {
-                    angular.element(this).removeClass(options.hover_class);
+                }).on('dragleave.condo', drop_targets, function(event) {
+                    angular.element(this).removeClass(hover_class);
                     
                     return false;
                 }).
@@ -126,8 +132,8 @@
                 // Clean up any event handlers
                 //
                 scope.$on('$destroy', function() {
-                    options.drop_targets.off('.condo');
-                    options.delegate.off('.condo');
+                    drop_targets.off('.condo');
+                    delegate.off('.condo');
                     element.removeClass('supports-svg').removeClass('no-svg');
                 });
 
@@ -169,7 +175,7 @@
                     error: ['file add failed - missing required uploader', 'failed to load file fingerprinting component']
                 };
                 scope.$on('coNotice', function(event, data) {
-                    if(!options.supress_notifications && data.type != 'info')
+                    if(!supress_notifications && data.type != 'info')
                         alert(data.type + ': ' + messages[data.type][data.number]);
                 });
             }

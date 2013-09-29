@@ -3,7 +3,7 @@
 
     angular.module('Condo').
 
-        factory('Condo.Md5', ['$window', '$rootScope', '$q', 'Condo.Config', function (window, $rootScope, $q, config) {
+        factory('Condo.Md5', ['$window', '$rootScope', '$q', function (window, $rootScope, $q) {
 
             var hasher,
                 queue = [],
@@ -39,7 +39,7 @@
                 };
 
             if (!!window.Worker) {
-                hasher = new window.Worker(config.md5_worker);
+                hasher = new window.Worker('/scripts/condo-hash-worker.js');
                 hasher.onmessage = recievedMessage;
                 hasher.onerror = function () {
                     ready = false;
@@ -50,7 +50,7 @@
                 };
                 ready = true;
             } else {
-                jQuery.getScript(config.md5_emulated_worker, function () {
+                jQuery.getScript('/scripts/condo-hash-worker-emulator.js', function () {
                     hasher = new window.CondoHashWorkerEmulator(recievedMessage);
                     ready = true;
                     processNext();    // It is possible
