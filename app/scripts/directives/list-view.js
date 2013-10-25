@@ -77,13 +77,13 @@
                     scope.perRow = scope.perRow || 1;
 
 
-                    $document.bind('scroll', scrolling);
-                    elWindow.bind('resize', resizing);
+                    $document.on('scroll', scrolling);
+                    elWindow.on('resize', resizing);
 
                     // unbind the globals on destroy
                     scope.$on('$destroy', function () {
-                        $document.unbind('scroll', scrolling);
-                        elWindow.unbind('resize', resizing);
+                        $document.off('scroll', scrolling);
+                        elWindow.off('resize', resizing);
                     });
 
                     scope.$watch('manager.lastUpdated', function () {

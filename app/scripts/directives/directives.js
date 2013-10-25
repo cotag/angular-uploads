@@ -69,7 +69,7 @@
                     supress_notifications = false;
             
                 //
-                // See Condo.Config for configuration options
+                // Configuration options
                 //
                 scope.endpoint = '/uploads';
                 scope.autostart = true;
@@ -286,11 +286,11 @@
                     if (close) { close(); }
                 });
                 
-                element.parent().bind('click', function(event) {
+                element.parent().on('click', function(event) {
                     event.stopPropagation();
                 });
                 
-                element.bind('click', function(event) {
+                element.on('click', function(event) {
                     event.preventDefault();
                     event.stopPropagation();
                     
@@ -310,22 +310,15 @@
                                 event.preventDefault();
                                 event.stopPropagation();
                             }
-                            $document.unbind('click', close);
+                            $document.off('click', close);
                             element.parent().removeClass('open');
                             close = null;
                             openElement = null;
                         };
                         
-                        $document.bind('click', close);
+                        $document.on('click', close);
                     }
                 });
-                
-                
-                //
-                // Center the pop-up, based on CSS location of the button
-                //
-                var popup = element.next('ul.dropdown-menu');
-                popup.css('margin-left', -(popup.width() / 2) + 'px');
             }
         };
     }]);

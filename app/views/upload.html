@@ -35,7 +35,7 @@
 		<h1>Cloud File Uploads</h1>
 
 		<div class="upload-container">
-			<cirgress progress="selected.upload.progress" total="selected.size">
+			<orbicular progress="selected.upload.progress" total="selected.size">
 				<div class="co-circle work" ng-class="{pending: circle_style.pending}"></div>
 				<div ng-class="{hide: selected, waiting: !selected}">
 					<img src="/images/upload.svg" alt="dnd upload" />
@@ -49,7 +49,7 @@
 				<div ng-class="{hide: !circle_style.uploading, uploading: circle_style.uploading}">
 					<p>{{prettyProgress()}}%</p>
 				</div>
-			</cirgress>
+			</orbicular>
 		</div>
 	</div>
 	<div class="condo-uploads-container">

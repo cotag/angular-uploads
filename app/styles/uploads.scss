@@ -13,7 +13,7 @@
 **/
 
 
-@import "progress_config";
+@import "orbicular_config";
 @import "compass";
 
 
@@ -135,8 +135,7 @@ div.condo-uploads-wrapper {
                         }
 
                         &> ul {
-                            left: 50%;
-                            padding: 1em;
+                            padding: 0.8em;
                             text-align: left;
                         }
 
@@ -332,4 +331,117 @@ div.condo-upload {
         }
     }
 }
+
+
+// The container holding the progress bar
+div.upload-container {
+
+    // Customise the data to be displayed in the circle
+    div.circle-content {
+
+        // Work pending (waiting to perform action)
+        div.work {
+            display:none;
+
+            &.pending {
+                display:block;
+                border-color: $progressBarColor;  // Same as div.circle
+                border-style: double solid;
+
+                -webkit-animation-duration: 3s;
+                -webkit-animation-name: spinners;
+                -webkit-animation-timing-function: linear;
+                -webkit-animation-iteration-count: infinite;
+                -moz-animation-duration: 3s;
+                -moz-animation-name: spinners;
+                -moz-animation-timing-function: linear;
+                -moz-animation-iteration-count: infinite;
+                -ms-animation-duration: 3s;
+                -ms-animation-name: spinners;
+                -ms-animation-timing-function: linear;
+                -ms-animation-iteration-count: infinite;
+                -o-animation-duration: 3s;
+                -o-animation-name: spinners;
+                -o-animation-timing-function: linear;
+                -o-animation-iteration-count: infinite;
+                animation-duration: 3s;
+                animation-name: spinners;
+                animation-timing-function: linear;
+                animation-iteration-count: infinite;
+            }
+        }
+
+        p {
+            font-family: 'Oswald';
+            text-transform: uppercase;
+            font-size: 0.075em;
+            line-height: 1em;
+            font-weight: 300;
+            margin: 0;
+            color: white;
+            text-align: center;
+        }
+
+        .waiting {
+            img {
+              width: 0.4em;
+            }
+        }
+        .uploading {
+            font-size: 3.5em;
+        }
+    }
+}
+
+.ng-cloak, .hide {
+    display: none;
+}
+
+@-webkit-keyframes spinners {
+  from {
+    -webkit-transform:rotate(0deg);
+  }
+ 
+  to {
+    -webkit-transform:rotate(360deg);
+  }
+}
+@-moz-keyframes spinners {
+  from {
+    -moz-transform:rotate(0deg);
+  }
+ 
+  to {
+    -moz-transform:rotate(360deg);
+  }
+}
+@-ms-keyframes spinners {
+  from {
+    -ms-transform:rotate(0deg);
+  }
+ 
+  to {
+    -ms-transform:rotate(360deg);
+  }
+}
+@-o-keyframes spinners {
+  from {
+    -o-transform:rotate(0deg);
+  }
+ 
+  to {
+    -o-transform:rotate(360deg);
+  }
+}
+@keyframes spinners {
+  from {
+    transform:rotate(0deg);
+  }
+ 
+  to {
+    transform:rotate(360deg);
+  }
+}
+
+
 
