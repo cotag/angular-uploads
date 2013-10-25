@@ -12,7 +12,7 @@
     "angular-sanitize": "~1.2.0",
     "angular-route": "~1.2.0",
     "easy-animate": "~1.2.0",
-    "orbicular": "~1.0.0"
+    "orbicular": "~1.0.1"
   },
   "devDependencies": {
     "angular-mocks": "~1.2.0",

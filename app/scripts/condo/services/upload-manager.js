@@ -96,6 +96,7 @@
                                                         }
 
                                                         if (file.size > 0) {
+                                                            totalSize += file.size;
                                                             new_items.push(file);
                                                         }
 
@@ -123,6 +124,7 @@
                                             } else {
                                                 entry = obj.getAsFile(); // Opera support
                                                 if (entry.size > 0) {
+                                                    totalSize += entry.size;
                                                     new_items.push(entry);
                                                 }
                                                 checkCount();
@@ -134,6 +136,7 @@
                                     }
                                 // Regular files where we can add them all at once
                                 } else {
+                                    filesAdded += files.length;
                                     files.push.apply(files, items);
                                     // Delay until next tick (delay and invoke apply are optional)
                                     $window.setTimeout(processPending, 0);
@@ -148,6 +151,7 @@
                             if (files.length === 0) {
                                 return;
                             }
+                            api.busy = true;
 
                             // Check if items or files
                             if (!!files[0].kind) {
@@ -163,6 +167,7 @@
                                 // Clone the files array
                                 for (i = 0; i < files.length; i += 1) {
                                     if (files[i].size > 0) {    // ensure the file has some contents
+                                        totalSize += files[i].size;
                                         copy.push(files[i]);
                                     }
                                 }
@@ -181,6 +186,10 @@
                             }
 
                             // promise to provide an update to listeners
+                            processing.promise['finally'](function () {
+                                api.busy = false;
+                                api.folderSize = totalSize;
+                            });
                             return processing.promise;
                         },
 
@@ -216,21 +225,22 @@
                                     index = files.indexOf(args[i]);
                                     if (index >= 0) {
                                         removed = true;
+                                        totalSize -= files[index].size;
                                         files.splice(index, 1);
                                     }
                                 }
 
                                 if (removed === true) {
+                                    api.folderSize = totalSize;
                                     $safeApply(refreshTimeStamp);
                                 }
                             },
                             fileCount: function () {
                                 return files.length;
                             },
-                            folderSize: function () {
-                                return totalSize;
-                            },
-                            lastUpdated: Date.now()
+                            folderSize: 0,
+                            lastUpdated: Date.now(),
+                            busy: false
                         };
 
                     // The public API
