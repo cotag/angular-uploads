@@ -1,6 +1,7 @@
 {
   "name": "angular-uploads",
   "version": "0.1.0",
+  "description": "Direct to cloud HTML5 file uploads",
   "dependencies": {
     "jquery": "~2.0.3",
     "spark-md5": "~0.0.5",
