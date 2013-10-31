@@ -23,7 +23,8 @@
         // Abstracting the list from the view itself
         factory('Condo.UploadManager', ['$window', '$q', '$safeApply', function ($window, $q, $safeApply) {
 
-            var returnFalse = function () { return false; },
+            var managers = {},
+                returnFalse = function () { return false; },
                 getManager = function () {
                     var processing,
                         pending = [],
@@ -248,7 +249,17 @@
                 };
 
             return {
-                newManager: getManager
+                newManager: getManager,
+                get: function (manName) {
+                    var manager = managers[manName];
+
+                    if (manager === undefined) {
+                        manager = getManager();
+                        managers[manName] = manager;
+                    }
+
+                    return manager;
+                }
             };
         }]);
 
