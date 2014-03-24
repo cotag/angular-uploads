@@ -80,7 +80,7 @@
 
                     return $http({
                         method: 'GET',
-                        url: this.endpoint + '/' + this.upload_id + '/edit',
+                        url: this.endpoint + '/' + encodeURIComponent(this.upload_id) + '/edit',
                         params: {
                             part: part_number,
                             file_id: part_id
@@ -107,7 +107,7 @@
 
                     return $http({
                         method: 'PUT',
-                        url: this.endpoint + '/' + this.upload_id,
+                        url: this.endpoint + '/' + encodeURIComponent(this.upload_id),
                         params: params
                     }).then(function (result) {
                         if (!self.aborting) {
@@ -130,7 +130,7 @@
                 destroy: function () {
                     return $http({
                         method: 'DELETE',
-                        url: this.endpoint + '/' + this.upload_id
+                        url: this.endpoint + '/' + encodeURIComponent(this.upload_id)
                     });
                 },
 
