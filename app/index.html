@@ -1,5 +1,6 @@
 <!doctype html>
 <head>
+    <base href="/">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Condo</title>
@@ -20,18 +21,16 @@
     <div class="container" ng-view=""></div>
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <script src="bower_components/jquery/jquery.js"></script>
+        <script src="bower_components/jquery/dist/jquery.js"></script>
         <script src="bower_components/angular/angular.js"></script>
         <script src="bower_components/angular-route/angular-route.js"></script>
         <script src="bower_components/angular-resource/angular-resource.js"></script>
-        <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-        <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 
         <script src="bower_components/easy-animate/requestAnimationFrame.js"></script>
         <script src="bower_components/easy-animate/angular-animate.js"></script>
         <script src="bower_components/angular-safeapply/safe-apply.js"></script>
         <script src="bower_components/base64/base64.js"></script>
-        <script src="bower_components/orbicular/orbicular/orbicular.js"></script>
+        <script src="bower_components/orbicular/orbicular.js"></script>
 
         <script src="scripts/condo.js"></script>
         <script src="scripts/condo/services/uploader.js"></script>
@@ -39,6 +38,7 @@
         <script src="scripts/condo/services/upload-manager.js"></script>
         <script src="scripts/condo/amazon.js"></script>
         <script src="scripts/condo/google.js"></script>
+        <script src="scripts/condo/openstack.js"></script>
 
         <script src="scripts/directives/directives.js"></script>
         <script src="scripts/directives/list-view.js"></script>

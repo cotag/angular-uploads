@@ -105,11 +105,10 @@
                     this.aborting = false;
                     params = params || {};
 
-                    return $http({
-                        method: 'PUT',
-                        url: this.endpoint + '/' + encodeURIComponent(this.upload_id),
-                        params: params
-                    }).then(function (result) {
+                    return $http.put(
+                        this.endpoint + '/' + encodeURIComponent(this.upload_id),
+                        params
+                    ).then(function (result) {
                         if (!self.aborting) {
                             return result.data;
                         }
