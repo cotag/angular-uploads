@@ -209,8 +209,12 @@
                                         //
                                         api.edit('finish').
                                             then(function (request) {
-                                                request.data = generatePartManifest();
-                                                api.process_request(request).then(completeUpload, defaultError);
+                                                if (request.signature) {
+                                                    request.data = generatePartManifest();
+                                                    api.process_request(request).then(completeUpload, defaultError);
+                                                } else {
+                                                    completeUpload();
+                                                }
                                             }, defaultError);
                                     }
                                 },
